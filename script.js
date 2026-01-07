@@ -34,6 +34,10 @@ const pedalParamsLeft = {
     x: 10, y: 10,
     w: 5, h: 60,
 
+    getCollisionRect(){
+        return {left: this.x, right: this.x + this.w, top: this.y, bottom: this.y + this.h};
+    },
+
     move(y){
         this.y += y;
 
@@ -50,6 +54,11 @@ const pedalParamsLeft = {
 const pedalParamsRight = {
     x: 770, y: 10,
     w: 5, h: 60,
+
+    getCollisionRect(){
+        return {left: this.x, right: this.x + this.w, top: this.y, bottom: this.y + this.h};
+
+    },
 
     move(y){
         this.y += y;
@@ -69,6 +78,10 @@ const ball = {
     w: 15, h: 15,
     moveX: 1, moveY:1, speed: 5,
     canMove: false,
+
+    getCollisionRect(){
+        return {left: this.x, right: this.x + this.w, top: this.y, bottom: this.y + this.h};
+    },
 
     setCanMove(_canMove){
         this.canMove = _canMove;
@@ -107,7 +120,13 @@ const ball = {
         }
 
         //pedal collisions
-        if(this.x < pedalParamsLeft.x + pedalParamsLeft.w && this.y < pedalParamsLeft.y + pedalParamsLeft.h && this.y > pedalParamsLeft.y){
+        // if(this.x < pedalParamsLeft.x + pedalParamsLeft.w && this.y < pedalParamsLeft.y + pedalParamsLeft.h && this.y > pedalParamsLeft.y){
+        //     this.moveX *= -1;
+        // }
+
+        if(this.getCollisionRect().top < pedalParamsLeft.getCollisionRect().bottom && this.getCollisionRect().bottom > pedalParamsLeft.getCollisionRect().top && this.getCollisionRect().left < pedalParamsLeft.getCollisionRect().right && this.getCollisionRect().right > pedalParamsLeft.getCollisionRect().left){
+            console.log("COllision");
+            
             this.moveX *= -1;
         }
 
