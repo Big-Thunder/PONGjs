@@ -125,12 +125,22 @@ const ball = {
         // }
 
         if(this.getCollisionRect().top < pedalParamsLeft.getCollisionRect().bottom && this.getCollisionRect().bottom > pedalParamsLeft.getCollisionRect().top && this.getCollisionRect().left < pedalParamsLeft.getCollisionRect().right && this.getCollisionRect().right > pedalParamsLeft.getCollisionRect().left){
-            console.log("COllision");
-            
+            if(this.moveX > 0){
+                return;
+            }
+
             this.moveX *= -1;
         }
 
-        if(this.x > pedalParamsRight.x - pedalParamsRight.w && this.y < pedalParamsRight.y + pedalParamsRight.h && this.y > pedalParamsRight.y){
+        // if(this.x > pedalParamsRight.x - pedalParamsRight.w && this.y < pedalParamsRight.y + pedalParamsRight.h && this.y > pedalParamsRight.y){
+        //     this.moveX *= -1;
+        // }
+
+        if(this.getCollisionRect().top < pedalParamsRight.getCollisionRect().bottom && this.getCollisionRect().bottom > pedalParamsRight.getCollisionRect().top && this.getCollisionRect().left < pedalParamsRight.getCollisionRect().right && this.getCollisionRect().right > pedalParamsRight.getCollisionRect().left){
+            if(this.moveX < 0){
+                return;
+            }
+
             this.moveX *= -1;
         }
     }
