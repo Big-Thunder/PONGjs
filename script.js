@@ -7,14 +7,23 @@ let rightPlayerScore = 0;
 function getRandomInt(min, max) {
   const minCeiled = Math.ceil(min);
   const maxFloored = Math.floor(max);
-  return Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled); // The maximum is exclusive and the minimum is inclusive
+  let res = Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled); // The maximum is exclusive and the minimum is inclusive
+  console.log(res);
+  return res;
 }
 
 function initGameState(){
-    leftPlayerScore = 0;
-    rightPlayerScore = 0;
-
     ball.setPos(WIDTH / 2, HEIGHT / 2, false);
+}
+
+function drawText(){
+    let tSize = 150;
+
+    textSize(tSize);
+    textAlign(CENTER, CENTER);
+    fill(100);
+    text(leftPlayerScore, (WIDTH/6), HEIGHT/2);
+    text(rightPlayerScore, WIDTH * (5/6), HEIGHT/2);
 }
 
 function setup() {
@@ -23,7 +32,7 @@ function setup() {
 
 const pedalParamsLeft = {
     x: 10, y: 10,
-    w: 20, h: 60,
+    w: 5, h: 60,
 
     move(y){
         this.y += y;
@@ -40,7 +49,7 @@ const pedalParamsLeft = {
 
 const pedalParamsRight = {
     x: 770, y: 10,
-    w: 20, h: 60,
+    w: 5, h: 60,
 
     move(y){
         this.y += y;
@@ -63,7 +72,9 @@ const ball = {
 
     setCanMove(_canMove){
         this.canMove = _canMove;
-        this.moveX = getRandomInt(-1, 2);
+        let dir = getRandomInt(0, 2);
+
+        this.moveX = dir === 0 ? 1 : -1;
     },
 
     setPos(posX, posY, resetMove){
@@ -81,7 +92,13 @@ const ball = {
         this.y += this.moveY * this.speed;
 
         //wall collisions
-        if(this.x < 0 || this.x > WIDTH - this.w){
+        if(this.x < 0){
+            rightPlayerScore++;
+            initGameState();
+        }
+
+        if(this.x > WIDTH - this.w){
+            leftPlayerScore++;
             initGameState();
         }
 
@@ -90,11 +107,11 @@ const ball = {
         }
 
         //pedal collisions
-        if(this.x < pedalParamsLeft.x + pedalParamsLeft.w && this.y < pedalParamsLeft.y + pedalParamsLeft.h && this.y > pedalParamsLeft.y - pedalParamsLeft.h){
+        if(this.x < pedalParamsLeft.x + pedalParamsLeft.w && this.y < pedalParamsLeft.y + pedalParamsLeft.h && this.y > pedalParamsLeft.y){
             this.moveX *= -1;
         }
 
-        if(this.x > pedalParamsRight.x - pedalParamsRight.w && this.y < pedalParamsRight.y + pedalParamsRight.h && this.y > pedalParamsRight.y - pedalParamsRight.h){
+        if(this.x > pedalParamsRight.x - pedalParamsRight.w && this.y < pedalParamsRight.y + pedalParamsRight.h && this.y > pedalParamsRight.y){
             this.moveX *= -1;
         }
     }
@@ -133,14 +150,20 @@ function draw() {
         pedalParamsLeft.move(10);
     }
 
-    if(keyIsDown(82) === true){
-        initGameState();
-    }
+    // if(keyIsDown(82) === true){
+    //     initGameState();
+    // }
 
+    
     background(20, 20, 20);
+    
+    drawText();
+    fill(255);
+
     rect(pedalParamsLeft.x, pedalParamsLeft.y, pedalParamsLeft.w, pedalParamsLeft.h);
     rect(pedalParamsRight.x, pedalParamsRight.y, pedalParamsRight.w, pedalParamsRight.h);
     rect(ball.x, ball.y, ball.w, ball.h);
+    
     ball.move();
 }
 
